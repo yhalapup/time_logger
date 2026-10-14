@@ -1,20 +1,35 @@
 require 'redmine'
 
-require_dependency 'time_logger_hooks'
+require File.expand_path(
+  'app/helpers/time_loggers_helper',
+  __dir__
+)
 
-# workaround helping rails to find the helper-methods
-require File.join(File.dirname(__FILE__), 'app/helpers/application_helper.rb')
+ApplicationController.helper(TimeLoggerApplicationHelper)
+
+# Some Redmine controllers may already have built their own helper module.
+# Add the helper explicitly to those too.
+ApplicationController.descendants.each do |controller|
+  next unless controller.respond_to?(:helper)
+
+  controller.helper(TimeLoggerApplicationHelper)
+end
+
+require File.expand_path(
+  'lib/time_logger_hooks',
+  __dir__
+)
 
 Redmine::Plugin.register :time_logger do
   name 'Time Logger'
   author 'Jim McAleer'
   description 'The orignal author was Jérémie Delaitre.'
   url 'https://github.com/speedy32129/time_logger'
-  version '0.5.4'
+  version '0.6.0'
 
   # fix for contect menus
 
-  requires_redmine version_or_higher: '1.1.0'
+  requires_redmine :version_or_higher => '3.0.0'
 
   settings default: { refresh_rate: '60', status_transitions: {}, redirect_to_new_time_entry: 'off' }, partial: 'settings/time_logger'
 

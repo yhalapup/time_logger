@@ -1,6 +1,7 @@
 class TimeLoggersController < ApplicationController
-  unloadable
 
+  extend TimeLoggerApplicationHelper
+  
   def index
     if User.current.nil?
       @user_time_loggers = nil
