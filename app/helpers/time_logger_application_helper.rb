@@ -1,4 +1,4 @@
-module ApplicationHelper
+module TimeLoggerApplicationHelper
   def time_logger_for(user)
     TimeLogger.find_by_user_id(user.id)
   end
